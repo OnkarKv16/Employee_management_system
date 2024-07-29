@@ -1,0 +1,5 @@
+package com.app.emp_mgmt.entity;
+
+public class Project {
+
+}

@@ -1,0 +1,39 @@
+package com.app.emp_mgmt.service;
+
+public class DepartmentServiceImpl {
+	@Autowired
+    private DepartmentRepository departmentRepository;
+
+    @Override
+    public Department saveDepartment(Department department) {
+        return departmentRepository.save(department);
+    }
+
+    @Override
+    public void deleteDepartment(Long id) {
+        Department existingDepartment = departmentRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Department not found with id " + id));
+        departmentRepository.delete(existingDepartment);
+    }
+    
+    @Override
+    public Department updateDepartment(Long id, Department department) {
+        Department existingDepartment = departmentRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Department not found with id " + id));
+        existingDepartment.setName(department.getName());
+        existingDepartment.setCode(department.getCode());
+        // Update other fields as necessary
+        return departmentRepository.save(existingDepartment);
+    }
+
+    @Override
+    public Department getDepartmentById(Long id) {
+        return departmentRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Department not found with id " + id));
+    }
+
+    @Override
+    public List<Department> getAllDepartments() {
+        return departmentRepository.findAll();
+    }
+}

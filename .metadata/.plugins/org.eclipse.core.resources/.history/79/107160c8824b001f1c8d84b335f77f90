@@ -1,0 +1,5 @@
+package com.app.emp_mgmt.model;
+
+public class EmployeeDTO {
+
+}

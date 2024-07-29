@@ -1,0 +1,5 @@
+package com.app.emp_mgmt.service;
+
+public class DepartmentServiceImpl {
+
+}

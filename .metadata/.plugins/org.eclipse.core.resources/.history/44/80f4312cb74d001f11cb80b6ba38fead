@@ -1,0 +1,14 @@
+package com.app.emp_mgmt.entity;
+
+@Entity
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class JobTitle {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long jobTitleId;
+
+    private String jobTitle;
+}

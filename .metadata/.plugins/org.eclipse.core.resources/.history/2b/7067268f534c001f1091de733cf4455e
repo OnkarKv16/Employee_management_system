@@ -1,0 +1,55 @@
+package com.app.emp_mgmt.controller;
+
+
+
+@RestController
+@RequestMapping("/api/departments")
+public class DepartmentController {
+
+    private final IDepartmentService departmentService;
+    private final ModelMapper modelMapper;
+
+    @Autowired
+    public DepartmentController(IDepartmentService departmentService, ModelMapper modelMapper) {
+        this.departmentService = departmentService;
+        this.modelMapper = modelMapper;
+    }
+
+    @PostMapping
+    public ResponseEntity<DepartmentDTO> createDepartment(@RequestBody DepartmentDTO departmentDTO) {
+        Department department = modelMapper.map(departmentDTO, Department.class);
+        Department savedDepartment = departmentService.saveDepartment(department);
+        DepartmentDTO savedDepartmentDTO = modelMapper.map(savedDepartment, DepartmentDTO.class);
+        return ResponseEntity.ok(savedDepartmentDTO);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<DepartmentDTO> updateDepartment(@PathVariable Long id, @RequestBody DepartmentDTO departmentDTO) {
+        Department department = modelMapper.map(departmentDTO, Department.class);
+        Department updatedDepartment = departmentService.updateDepartment(id, department);
+        DepartmentDTO updatedDepartmentDTO = modelMapper.map(updatedDepartment, DepartmentDTO.class);
+        return ResponseEntity.ok(updatedDepartmentDTO);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteDepartment(@PathVariable Long id) {
+        departmentService.deleteDepartment(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<DepartmentDTO> getDepartmentById(@PathVariable Long id) {
+        Department department = departmentService.getDepartmentById(id);
+        DepartmentDTO departmentDTO = modelMapper.map(department, DepartmentDTO.class);
+        return ResponseEntity.ok(departmentDTO);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<DepartmentDTO>> getAllDepartments() {
+        List<Department> departments = departmentService.getAllDepartments();
+        List<DepartmentDTO> departmentDTOs = departments.stream()
+                .map(department -> modelMapper.map(department, DepartmentDTO.class))
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(departmentDTOs);
+    }
+}

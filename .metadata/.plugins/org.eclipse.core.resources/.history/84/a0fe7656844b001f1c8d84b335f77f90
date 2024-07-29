@@ -1,0 +1,38 @@
+package com.app.emp_mgmt.service;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.app.emp_mgmt.entity.Employee;
+import com.app.emp_mgmt.repo.EmployeeRepository;
+
+@Service
+public class EmployeeServiceImpl implements IEmployeeService {
+
+	@Autowired
+    private EmployeeRepository employeeRepository;
+	
+	@Override
+	public Employee saveEmployee(Employee employee) {
+	    return employeeRepository.save(employee);
+	}
+	@Override
+	public void deleteEmployee(Long id) {
+		 Employee existingEmployee = employeeRepository.findById(id)
+	                .orElseThrow(() -> new ResourceNotFoundException("Employee not found with id " + id));
+	        employeeRepository.delete(existingEmployee);
+
+	}
+	
+	@Override
+    public Employee updateEmployee(Long id, Employee employee) {
+        Employee existingEmployee = employeeRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Employee not found with id " + id));
+        existingEmployee.setName(employee.getName());
+        existingEmployee.setRole(employee.getRole());
+        existingEmployee.setDepartment(employee.getDepartment());
+        // Update other fields as necessary
+        return employeeRepository.save(existingEmployee);
+    }
+
+}

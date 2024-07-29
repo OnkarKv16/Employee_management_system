@@ -1,0 +1,95 @@
+package com.app.emp_mgmt.service;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.app.emp_mgmt.entity.Employee;
+import com.app.emp_mgmt.exception.ResourceNotFoundException;
+import com.app.emp_mgmt.repo.EmployeeRepository;
+
+@Service
+public class EmployeeServiceImpl implements IEmployeeService {
+
+	@Autowired
+    private EmployeeRepository employeeRepository;
+	
+	@Autowired
+    private ModelMapper modelMapper;
+
+    @Override
+    public EmployeeDTO saveEmployee(EmployeeDTO employeeDTO) {
+        Employee employee = modelMapper.map(employeeDTO, Employee.class);
+        Employee savedEmployee = employeeRepository.save(employee);
+        return modelMapper.map(savedEmployee, EmployeeDTO.class);
+    }
+
+    @Override
+    public void deleteEmployee(Long id) {
+        Employee existingEmployee = employeeRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Employee not found with id " + id));
+        employeeRepository.delete(existingEmployee);
+    }
+
+    @Override
+    public EmployeeDTO updateEmployee(Long id, EmployeeDTO employeeDTO) {
+        Employee existingEmployee = employeeRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Employee not found with id " + id));
+        modelMapper.map(employeeDTO, existingEmployee);
+        Employee updatedEmployee = employeeRepository.save(existingEmployee);
+        return modelMapper.map(updatedEmployee, EmployeeDTO.class);
+    }
+
+    @Override
+    public EmployeeDTO getEmployeeById(Long id) {
+        Employee employee = employeeRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Employee not found with id " + id));
+        return modelMapper.map(employee, EmployeeDTO.class);
+    }
+
+    @Override
+    public List<EmployeeDTO> getAllEmployees() {
+        return employeeRepository.findAll().stream()
+                .map(employee -> modelMapper.map(employee, EmployeeDTO.class))
+                .collect(Collectors.toList());
+    }
+	
+	
+/*----------------------------------------------------------------------------------------------------------*/	
+	
+//	@Override
+//	public Employee saveEmployee(Employee employee) {
+//	    return employeeRepository.save(employee);
+//	}
+//	@Override
+//	public void deleteEmployee(Long id) {
+//		 Employee existingEmployee = employeeRepository.findById(id)
+//	                .orElseThrow(() -> new ResourceNotFoundException("Employee not found with id " + id));
+//	        employeeRepository.delete(existingEmployee);
+//
+//	}
+//	
+//	@Override
+//    public Employee updateEmployee(Long id, Employee employee) {
+//        Employee existingEmployee = employeeRepository.findById(id)
+//                .orElseThrow(() -> new ResourceNotFoundException("Employee not found with id " + id));
+//        existingEmployee.setName(employee.getName());
+//        existingEmployee.setRole(employee.getRole());
+//        existingEmployee.setDepartment(employee.getDepartment());
+//        // Update other fields as necessary
+//        return employeeRepository.save(existingEmployee);
+//    }
+//	
+//	 @Override
+//	 public Employee getEmployeeById(Long id) {
+//	     return employeeRepository.findById(id)
+//	                .orElseThrow(() -> new ResourceNotFoundException("Employee not found with id " + id));
+//	}
+//	 
+//	 @Override
+//	    public List<Employee> getAllEmployees() {
+//	        return employeeRepository.findAll();
+//	    }
+
+}
